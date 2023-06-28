@@ -1,4 +1,4 @@
-#This is now Assignment 2
+# This is Assgnment 2 now.
 # Install the required MySQL package
 
 sudo apt-get update -y

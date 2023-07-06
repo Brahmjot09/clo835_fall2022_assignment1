@@ -1,4 +1,4 @@
-name: Deploy to ECR
+name: Deploy Mysql & Webapp Images to ECR
 
 on: 
   push:
@@ -26,9 +26,10 @@ jobs:
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         ECR_REPOSITORY: brahm-repo-app
-        APPLICATION_IMAGE_TAG: v1.0
+        APPLICATION_IMAGE_TAG: ${{ env.DATE_TIME }}
+      
       run: |
-        
+        export DATE_TIME=$(date +%Y%m%d%H%M)
         # Docker build and push application image
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:application-$APPLICATION_IMAGE_TAG .
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:application-$APPLICATION_IMAGE_TAG
@@ -37,8 +38,9 @@ jobs:
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         ECR_REPOSITORY: brahm-repo-mysql
-        MYSQL_IMAGE_TAG: v5.6
+        MYSQL_IMAGE_TAG: ${{ env.DATE_TIME }}
       run: |
+        export DATE_TIME=$(date +%Y%m%d%H%M)
         # Docker build and push MySQL image
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:mysql-$MYSQL_IMAGE_TAG -f Dockerfile_mysql .
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:mysql-$MYSQL_IMAGE_TAG

@@ -25,23 +25,24 @@ jobs:
     - name: Create tag for images
       run: |
         export DATE_TIME=$(date -u +"%Y%m%d%H%M")
+        echo "DATE_TIME=$DATE_TIME" >> $GITHUB_ENV
 
     - name: Build, test, tag, and push application image to Amazon App ECR Repo
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         ECR_REPOSITORY: brahm-repo-app
-        APPLICATION_IMAGE_TAG: ${{ env.DATE_TIME }}
       run: |
+        APPLICATION_IMAGE_TAG=$DATE_TIME
         # Docker build and push application image
-        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:application-${APPLICATION_IMAGE_TAG} .
-        docker push $ECR_REGISTRY/$ECR_REPOSITORY:application-${APPLICATION_IMAGE_TAG}
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:application-$APPLICATION_IMAGE_TAG .
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY:application-$APPLICATION_IMAGE_TAG
 
     - name: Build, test, tag, and push MySQL image to Amazon Mysql ECR Repo
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         ECR_REPOSITORY: brahm-repo-mysql
-        MYSQL_IMAGE_TAG: ${{ env.DATE_TIME }}
       run: |
+        MYSQL_IMAGE_TAG=$DATE_TIME
         # Docker build and push MySQL image
-        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:mysql-${MYSQL_IMAGE_TAG} -f Dockerfile_mysql .
-        docker push $ECR_REGISTRY/$ECR_REPOSITORY:mysql-${MYSQL_IMAGE_TAG}
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:mysql-$MYSQL_IMAGE_TAG -f Dockerfile_mysql .
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY:mysql-$MYSQL_IMAGE_TAG
